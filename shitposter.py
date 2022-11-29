@@ -61,7 +61,7 @@ def slack_client_from_env():
 
 
 def should_force_publish():
-    return os.environ.get('FORCE_PUBLISH').lower() in ('true', '1', 'yas')
+    return os.environ.get('FORCE_PUBLISH', '').lower() in ('true', '1', 'yas')
 
 
 def is_today(latest):
@@ -85,6 +85,7 @@ def post_on_facebook(creds=None, share_text=''):
     driver = webdriver.Firefox()
     driver.implicitly_wait(10)
     driver.get('https://m.facebook.com')
+    logger.info('facebook - launched browser')
     time.sleep(2)
     elem = driver.find_element(By.ID, 'm_login_email')
     elem.clear()
@@ -93,6 +94,7 @@ def post_on_facebook(creds=None, share_text=''):
     elem.clear()
     elem.send_keys(creds.password)
     driver.find_element(By.XPATH, "//button[@value='Log in']").click()
+    logger.info('facebook - logged in with credentials')
     time.sleep(2)
     driver.find_element(By.XPATH, "//span[contains(text(), 'Not now')]").find_element(By.XPATH, "../.").click()
     time.sleep(2)
@@ -101,7 +103,8 @@ def post_on_facebook(creds=None, share_text=''):
     elem = driver.find_element(By.XPATH, "//textarea[@aria-label=\"What's on your mind?\"]")
     elem.clear()
     elem.send_keys(share_text)
-    driver.find_element(By.XPATH, "//button[@value='Post']").click()
+    driver.find_element(By.XPATH, "//button[@value='Post'][contains(text(), 'Post')]").click()
+    logger.info('facebook - submitted new post')
 
 
 def twitter_client_from_env():

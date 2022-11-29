@@ -11,6 +11,7 @@ venv/bin/python:
 	./venv/bin/pip install -q feedparser
 	./venv/bin/pip install -q slack-sdk
 	./venv/bin/pip install -q tweepy
+	./venv/bin/pip install -q selenium
 
 .phony: clean
 clean:

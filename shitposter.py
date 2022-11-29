@@ -38,7 +38,7 @@ def main():
     '''.strip()
 
     if slack := slack_client_from_env():
-        slack.send(icon_emoji=':reckerbot:', text=share_text)
+        slack.send(text=share_text)
         logger.info('shared latest with slack')
 
     if twitter := twitter_client_from_env():
@@ -55,7 +55,7 @@ def main():
 
 def slack_client_from_env():
     try:
-        slack_sdk.webhook.WebhookClient(os.environ['SLACK_WEBHOOK_URL'])
+        return slack_sdk.webhook.WebhookClient(os.environ['SLACK_WEBHOOK_URL'])
     except KeyError:
         return None
 

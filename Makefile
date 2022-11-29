@@ -12,6 +12,7 @@ venv/bin/python:
 	./venv/bin/pip install -q slack-sdk
 	./venv/bin/pip install -q tweepy
 	./venv/bin/pip install -q selenium
+	./venv/bin/pip install -q Mastodon.py
 
 .phony: clean
 clean:

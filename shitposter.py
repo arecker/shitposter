@@ -13,6 +13,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import slack_sdk.webhook
 import tweepy
+import mastodon
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,15 @@ def main():
         twitter.update_status(status=share_text)
         logger.info('shared latest with twitter')
 
+    if mastodon_creds := mastodon_creds_from_env():
+        client = mastodon.Mastodon(
+            client_id=mastodon_creds.app_secret_file,
+            api_base_url=mastodon_creds.server_url,
+        )
+        client.log_in(mastodon_creds.email, mastodon_creds.password)
+        client.toot(share_text)
+        logger.info('shared latest with mastodon (%s)', mastodon_creds.server_url)
+
     if facebook := facebook_creds_from_env():
         post_on_facebook(creds=facebook, share_text=share_text)
         logger.info('shared latest on facebook')
@@ -76,6 +86,25 @@ FacebookCreds = collections.namedtuple('FacebookCreds', 'login password')
 def facebook_creds_from_env() -> FacebookCreds:
     try:
         return FacebookCreds(login=os.environ['FACEBOOK_LOGIN'], password=os.environ['FACEBOOK_PASSWORD'])
+    except KeyError:
+        return None
+
+MastodonCreds = collections.namedtuple('MastodonCreds', [
+    'app_secret_file',
+    'server_url',
+    'email',
+    'password',
+])
+
+
+def mastodon_creds_from_env() -> MastodonCreds:
+    try:
+        return MastodonCreds(
+            app_secret_file=os.environ['MASTODON_APP_SECRET_FILE'],
+            server_url=os.environ['MASTODON_SERVER_URL'],
+            email=os.environ['MASTODON_EMAIL'],
+            password=os.environ['MASTODON_PASSWORD']
+        )
     except KeyError:
         return None
 

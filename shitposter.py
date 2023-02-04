@@ -26,7 +26,7 @@ def main():
         logger.fatal('FEED_URL="..." is not set!')
         sys.exit(1)
 
-    latest = feedparser.parse(os.environ['FEED_URL']).entries[0]
+    latest = find_latest_entry()
     logger.info('found latest entry %s', latest['title'])
     if not is_today(latest) and not should_force_publish():
         logger.info('latest entry is old, nothing to do')
@@ -147,6 +147,12 @@ def twitter_client_from_env():
         return tweepy.API(auth)
     except KeyError:
         return None
+
+
+def find_latest_entry():
+    for entry in feedparser.parse(os.environ['FEED_URL']).entries:
+        if entry.content:
+            return entry
 
 
 if __name__ == '__main__':

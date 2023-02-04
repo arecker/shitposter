@@ -151,7 +151,7 @@ def twitter_client_from_env():
 
 def find_latest_entry():
     for entry in feedparser.parse(os.environ['FEED_URL']).entries:
-        if 'title' in entry.keys():
+        if 'summary' in entry.keys():
             return entry
 
 

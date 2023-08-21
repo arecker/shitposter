@@ -1,0 +1,5 @@
+feedparser==6.0.10
+slack-sdk==3.21.3
+tweepy==4.14.0
+selenium==4.11.2
+Mastodon.py==1.8.1
